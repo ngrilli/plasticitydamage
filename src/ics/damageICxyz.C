@@ -1,0 +1,65 @@
+/****************************************************************/
+/*               DO NOT MODIFY THIS HEADER                      */
+/* MOOSE - Multiphysics Object Oriented Simulation Environment  */
+/*                                                              */
+/*           (c) 2010 Battelle Energy Alliance, LLC             */
+/*                   ALL RIGHTS RESERVED                        */
+/*                                                              */
+/*          Prepared by Battelle Energy Alliance, LLC           */
+/*            Under Contract No. DE-AC07-05ID14517              */
+/*            With the U. S. Department of Energy               */
+/*                                                              */
+/*            See COPYRIGHT for full restrictions               */
+/****************************************************************/
+
+#include "damageICxyz.h"
+
+template<>
+InputParameters validParams<damageICxyz>()
+{
+  InputParameters params = validParams<InitialCondition>();
+  params.addRequiredParam<Real>("coefficient", "The value of the initial condition");
+  params.addRequiredParam<Real>("radius", "distance between node and xyz");
+  params.addRequiredParam<unsigned int>("xyzfilesize", "number of damaged points in the xyz file");
+  return params;
+}
+
+damageICxyz::damageICxyz(const InputParameters & parameters) :
+    InitialCondition(parameters),
+    _coefficient(getParam<Real>("coefficient")),
+    _radius(getParam<Real>("radius")),
+    _xyzfilesize(getParam<unsigned int>("xyzfilesize"))
+{}
+
+Real
+damageICxyz::value(const Point & p)
+{
+  /**
+   * _value * x
+   * The Point class is defined in libMesh.  The spatial
+   * coordinates x,y,z can be accessed individually using
+   * the parenthesis operator and a numeric index from 0..2
+   */
+
+  int k;
+  Real xdamagetemp, ydamagetemp, zdamagetemp;
+  std::ifstream fileIN1;
+
+  fileIN1.open("damageonecolumn.txt");
+
+  for (k=0; k<_xyzfilesize; k++)
+  {
+    fileIN1 >> xdamagetemp;
+    fileIN1 >> ydamagetemp;
+    fileIN1 >> zdamagetemp;
+
+    if ( std::pow(p(0)-xdamagetemp,2.0)+std::pow(p(1)-ydamagetemp,2.0)+std::pow(p(2)-zdamagetemp,2.0) < std::pow(_radius,2.0) )
+      {
+        return _coefficient;
+      }
+  }
+
+  fileIN1.close();
+
+  return 0.0;
+}

@@ -4,6 +4,45 @@
 #include "ModulesApp.h"
 #include "MooseSyntax.h"
 
+#include "CrystalPlasticitySlipRateDislo.h"
+#include "CrystalPlasticitySlipResistanceDislo.h"
+#include "CrystalPlasticityStateVarRateComponentDislo.h"
+#include "NSMomentumInviscidFluxWithoutP.h"
+#include "InertialForceCompressible.h"
+#include "FiniteStrainCrystalPlasticityEOS.h"
+#include "FiniteStrainCrystalPlasticityBulkViscosity.h"
+#include "FiniteStrainCrystalPlasticityEOSBulkViscosity.h"
+#include "FiniteStrainCrystalPlasticityEOSBulkViscosityFdot.h"
+#include "FiniteStrainCrystalPlasticityEOSBulkViscositySigned.h"
+#include "FiniteStrainCrystalPlasticityEOSquadC0.h"
+#include "FiniteStrainCrystalPlasticityPhonon.h"
+#include "FiniteStrainCrystalPlasticityDamage.h"
+#include "FiniteStrainCrystalPlasticityMcAuliffe.h"
+#include "FiniteStrainCrystalPlasticityW0p.h"
+#include "LinearIsoElasticPFDamageEOS.h"
+#include "LinearIsoElasticPFDamageEOSBulkViscosity.h"
+#include "LinearIsoElasticPFAmor.h"
+#include "LinearIsoElasticPFDamageNoc.h"
+#include "LinearIsoElasticPFDamageMiehe.h"
+#include "PFFracBulkRatePlastic.h"
+#include "PFFracBulkRatePlasticFactor.h"
+#include "PFFracBulkRateNob.h"
+#include "PFFracBulkRateLaplacian.h"
+#include "TimeDerivativeDamage.h"
+#include "ReactionAbsolute.h"
+#include "PFFracBulkRateNobLimited.h"
+#include "PFFracBulkRateCAux.h"
+#include "PFFracBulkRateMiehe.h"
+#include "damageIC.h"
+#include "damageICxyz.h"
+#include "CrystalPlasticityPFDamageMiehe.h"
+#include "CrackFrictionHeatSource.h"
+#include "CrackPropagationHeatSource.h"
+#include "PlasticHeatingSource.h"
+#include "ComputeCrackFrictionHeatEnergy.h"
+#include "ComputeCrackFrictionHeatEnergyDienes.h"
+#include "ThermalExpansionHeatSource.h"
+
 template <>
 InputParameters
 validParams<plasticitydamageApp>()
@@ -46,6 +85,47 @@ plasticitydamageApp__registerObjects(Factory & factory)
 void
 plasticitydamageApp::registerObjects(Factory & factory)
 {
+  registerMaterial(FiniteStrainCrystalPlasticityEOS);
+  registerMaterial(FiniteStrainCrystalPlasticityBulkViscosity);
+  registerMaterial(FiniteStrainCrystalPlasticityEOSBulkViscosity);
+  registerMaterial(FiniteStrainCrystalPlasticityEOSBulkViscosityFdot);
+  registerMaterial(FiniteStrainCrystalPlasticityEOSBulkViscositySigned);
+  registerMaterial(FiniteStrainCrystalPlasticityEOSquadC0);
+  registerMaterial(FiniteStrainCrystalPlasticityPhonon);
+  registerMaterial(FiniteStrainCrystalPlasticityDamage);
+  registerMaterial(FiniteStrainCrystalPlasticityMcAuliffe);
+  registerMaterial(FiniteStrainCrystalPlasticityW0p);
+  registerMaterial(LinearIsoElasticPFDamageEOS);
+  registerMaterial(LinearIsoElasticPFDamageEOSBulkViscosity);
+  registerMaterial(LinearIsoElasticPFAmor);
+  registerMaterial(LinearIsoElasticPFDamageNoc);
+  registerMaterial(LinearIsoElasticPFDamageMiehe);
+  registerMaterial(CrystalPlasticityPFDamageMiehe);
+  registerMaterial(ComputeCrackFrictionHeatEnergy);
+  registerMaterial(ComputeCrackFrictionHeatEnergyDienes);
+
+  registerKernel(NSMomentumInviscidFluxWithoutP);
+  registerKernel(InertialForceCompressible);
+  registerKernel(PFFracBulkRatePlastic);
+  registerKernel(PFFracBulkRatePlasticFactor);
+  registerKernel(PFFracBulkRateNob);
+  registerKernel(PFFracBulkRateLaplacian);
+  registerKernel(TimeDerivativeDamage);
+  registerKernel(ReactionAbsolute);
+  registerKernel(PFFracBulkRateNobLimited);
+  registerKernel(PFFracBulkRateCAux);
+  registerKernel(PFFracBulkRateMiehe);
+  registerKernel(CrackFrictionHeatSource);
+  registerKernel(CrackPropagationHeatSource);
+  registerKernel(PlasticHeatingSource);
+  registerKernel(ThermalExpansionHeatSource);
+
+  registerUserObject(CrystalPlasticitySlipRateDislo);
+  registerUserObject(CrystalPlasticitySlipResistanceDislo);
+  registerUserObject(CrystalPlasticityStateVarRateComponentDislo);
+
+  registerInitialCondition(damageIC);
+  registerInitialCondition(damageICxyz);
 }
 
 // External entry point for dynamic syntax association
