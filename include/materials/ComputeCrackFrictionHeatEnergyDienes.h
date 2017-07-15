@@ -7,6 +7,7 @@
 #ifndef COMPUTECRACKFRICTIONHEATENERGYDIENES_H
 #define COMPUTECRACKFRICTIONHEATENERGYDIENES_H
 
+#include "DerivativeMaterialInterface.h"
 #include "Material.h"
 #include "RankTwoTensor.h"
 #include "RankFourTensor.h"
