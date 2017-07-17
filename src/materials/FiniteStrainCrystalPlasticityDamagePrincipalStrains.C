@@ -144,8 +144,8 @@ FiniteStrainCrystalPlasticityDamagePrincipalStrains::postSolveStatevar()
 void
 FiniteStrainCrystalPlasticityDamagePrincipalStrains::update_energies()
 {
-  RankTwoTensor cauchy_stress_undamaged, WpToTrace, invFe, ee, ce, iden;
-  Real detFe, detFe_old;
+  RankTwoTensor cauchy_stress_undamaged, WpToTrace, invFe;
+  Real detFe;
   Real c = _c[_qp];
 
   if (_max_substep_iter == 1) //No substepping
@@ -175,8 +175,8 @@ FiniteStrainCrystalPlasticityDamagePrincipalStrains::update_energies()
 void
 FiniteStrainCrystalPlasticityDamagePrincipalStrains::calcResidual( RankTwoTensor &resid )
 {
-  RankTwoTensor iden, ce, ee, ee_dev, ee_vol, ce_pk2, eqv_slip_incr, pk2_new;
-  Real trD, trE;
+  RankTwoTensor iden, ce, ee, ce_pk2, eqv_slip_incr, pk2_new;
+  Real trD;
   Real c = _c[_qp];
   Real xfac = Utility::pow<2>(1.0-c) + _kdamage;
 
