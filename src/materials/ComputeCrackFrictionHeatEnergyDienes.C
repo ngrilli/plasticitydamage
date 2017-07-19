@@ -103,7 +103,7 @@ ComputeCrackFrictionHeatEnergyDienes::computeQpProperties()
 
   _heat_source_rate[_qp] = 0.0;
 
-  if ( _friction_normal_force[_qp] < 0.0 && slide_velocity_dot_crack_normal < 0.0 ) {
+  if ( _friction_normal_force[_qp] < 0.0 ) { // slide_velocity_dot_crack_normal < 0.0 condition for crack closing rate
     _heat_source_rate[_qp] = - _friction_coefficient * _friction_normal_force[_qp] * _slide_velocity_parallel[_qp];
     _heat_source_rate[_qp] *= _crack_surface_density[_qp];
   }
