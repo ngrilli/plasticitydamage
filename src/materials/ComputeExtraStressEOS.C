@@ -30,7 +30,8 @@ ComputeExtraStressEOS::ComputeExtraStressEOS(const InputParameters & parameters)
   _C0(getParam<Real>("C0")),
   _C1(getParam<Real>("C1")),
   _deformation_gradient(getMaterialProperty<RankTwoTensor>("deformation_gradient")),
-  _deformation_gradient_old(getMaterialPropertyOld<RankTwoTensor>("deformation_gradient"))
+  _deformation_gradient_old(getMaterialPropertyOld<RankTwoTensor>("deformation_gradient")),
+  _stress(getMaterialProperty<RankTwoTensor>("stress"))
 {
 }
 
