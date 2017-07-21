@@ -37,7 +37,7 @@ protected:
 
   const MaterialProperty<RankTwoTensor> & _deformation_gradient;
   const MaterialProperty<RankTwoTensor> & _deformation_gradient_old;
-  const MaterialProperty<RankTwoTensor> & _stress;
+  const MaterialProperty<RankTwoTensor> & _stress_old;
 
   RankTwoTensor _extra_stress_tensor;
 };

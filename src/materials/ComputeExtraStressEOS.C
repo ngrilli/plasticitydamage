@@ -31,7 +31,7 @@ ComputeExtraStressEOS::ComputeExtraStressEOS(const InputParameters & parameters)
   _C1(getParam<Real>("C1")),
   _deformation_gradient(getMaterialProperty<RankTwoTensor>("deformation_gradient")),
   _deformation_gradient_old(getMaterialPropertyOld<RankTwoTensor>("deformation_gradient")),
-  _stress(getMaterialProperty<RankTwoTensor>("stress"))
+  _stress_old(getMaterialPropertyOld<RankTwoTensor>("stress"))
 {
 }
 
@@ -43,7 +43,7 @@ ComputeExtraStressEOS::computeQpExtraStress()
 
   volumetric_stress.zero();
   // Calculate volumetric stress
-  volumetric_stress.addIa( (1.0/3.0) * _stress[_qp].trace() );
+  volumetric_stress.addIa( (1.0/3.0) * _stress_old[_qp].trace() );
 
   EOS_stress.zero();
   // Birch-Murnaghan EOS
