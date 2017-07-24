@@ -20,6 +20,7 @@
 #include "FiniteStrainCrystalPlasticityMcAuliffe.h"
 #include "FiniteStrainCrystalPlasticityW0p.h"
 #include "FiniteStrainCrystalPlasticityDamagePrincipalStrains.h"
+#include "FiniteStrainCrystalPlasticityFromEos.h"
 #include "LinearIsoElasticPFDamageEOS.h"
 #include "LinearIsoElasticPFDamageEOSBulkViscosity.h"
 #include "LinearIsoElasticPFAmor.h"
@@ -99,6 +100,7 @@ plasticitydamageApp::registerObjects(Factory & factory)
   registerMaterial(FiniteStrainCrystalPlasticityMcAuliffe);
   registerMaterial(FiniteStrainCrystalPlasticityW0p);
   registerMaterial(FiniteStrainCrystalPlasticityDamagePrincipalStrains);
+  registerMaterial(FiniteStrainCrystalPlasticityFromEos);
   registerMaterial(LinearIsoElasticPFDamageEOS);
   registerMaterial(LinearIsoElasticPFDamageEOSBulkViscosity);
   registerMaterial(LinearIsoElasticPFAmor);
