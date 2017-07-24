@@ -5,14 +5,14 @@
 /*             See LICENSE for full restrictions                */
 /****************************************************************/
 
-#include "ComputeExtraStressEOS.h"
+#include "ComputeStressEosBase.h"
 
-template <>
+template<>
 InputParameters
-validParams<ComputeExtraStressEOS>()
+validParams<ComputeStressEosBase>()
 {
-  InputParameters params = validParams<ComputeExtraStressBase>();
-  params.addClassDescription("Computes a volumetric extra stress including a Birch-Murnaghan EOS"
+  InputParameters params = validParams<ComputeStressBase>();
+  params.addClassDescription("Adds a volumetric extra stress including a Birch-Murnaghan EOS"
                              "and bulk viscosity damping for shock propagation"
                              "that is substituted to the volumetric stress "
                              "calculated by the constitutive model");
@@ -23,27 +23,28 @@ validParams<ComputeExtraStressEOS>()
   return params;
 }
 
-ComputeExtraStressEOS::ComputeExtraStressEOS(const InputParameters & parameters)
-  : ComputeExtraStressBase(parameters),
+ComputeStressEosBase::ComputeStressEosBase(const InputParameters & parameters) :
+  ComputeStressBase(parameters),
   _n_Murnaghan(getParam<Real>("n_Murnaghan")),
   _Bulk_Modulus_Ref(getParam<Real>("bulk_modulus_ref")),
   _C0(getParam<Real>("C0")),
   _C1(getParam<Real>("C1")),
   _deformation_gradient(getMaterialProperty<RankTwoTensor>("deformation_gradient")),
-  _deformation_gradient_old(getMaterialPropertyOld<RankTwoTensor>("deformation_gradient")),
-  _stress_old(getMaterialPropertyOld<RankTwoTensor>("stress"))
+  _deformation_gradient_old(getMaterialPropertyOld<RankTwoTensor>("deformation_gradient"))
 {
 }
 
 void
-ComputeExtraStressEOS::computeQpExtraStress()
+ComputeStressEosBase::computeQpProperties()
 {
   RankTwoTensor volumetric_stress, EOS_stress, bulk_viscosity_stress;
   Real dspecific_volume_dt;
 
+  computeQpStress();
+
   volumetric_stress.zero();
   // Calculate volumetric stress
-  volumetric_stress.addIa(_stress_old[_qp].trace() / 3.0);
+  volumetric_stress.addIa(_stress[_qp].trace() / 3.0);
 
   EOS_stress.zero();
   // Birch-Murnaghan EOS
@@ -59,5 +60,13 @@ ComputeExtraStressEOS::computeQpExtraStress()
   bulk_viscosity_stress.addIa(_C1 * dspecific_volume_dt);
 
   // Subtract the original volumetric stress, add the one given by the EOS and bulk viscosity
-  _extra_stress[_qp] = EOS_stress + bulk_viscosity_stress - volumetric_stress;
+  _stress[_qp] = _stress[_qp] + EOS_stress + bulk_viscosity_stress - volumetric_stress;
+
+  // Add in extra stress
+  _stress[_qp] += _extra_stress[_qp];
 }
+
+//void
+//ComputeStressEosBase::computeQpStress()
+//{
+//}
