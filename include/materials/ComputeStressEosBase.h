@@ -27,7 +27,6 @@ public:
 
 protected:
   virtual void computeQpProperties();
-  //virtual void computeQpStress();
 
   // exponent in Birch-Murnaghan EOS
   const Real _n_Murnaghan;
