@@ -41,6 +41,7 @@
 #include "CrackFrictionHeatSource.h"
 #include "CrackPropagationHeatSource.h"
 #include "PlasticHeatingSource.h"
+#include "PlasticHeatingSourceMiehe2016.h"
 #include "ComputeCrackFrictionHeatEnergy.h"
 #include "ComputeCrackFrictionHeatEnergyDienes.h"
 #include "ComputeExtraStressEOS.h"
@@ -126,6 +127,7 @@ plasticitydamageApp::registerObjects(Factory & factory)
   registerKernel(CrackFrictionHeatSource);
   registerKernel(CrackPropagationHeatSource);
   registerKernel(PlasticHeatingSource);
+  registerKernel(PlasticHeatingSourceMiehe2016);
   registerKernel(ThermalExpansionHeatSource);
 
   registerUserObject(CrystalPlasticitySlipRateDislo);

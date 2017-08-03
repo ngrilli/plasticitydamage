@@ -1,22 +1,23 @@
-#ifndef PLASTICHEATINGSOURCE_H
-#define PLASTICHEATINGSOURCE_H
+#ifndef PLASTICHEATINGSOURCEMIEHE2016_H
+#define PLASTICHEATINGSOURCEMIEHE2016_H
 
 #include "HeatSource.h"
 #include "RankTwoTensor.h"
 
 // Forward Declarations
-class PlasticHeatingSource;
+class PlasticHeatingSourceMiehe2016;
 
 template <>
-InputParameters validParams<PlasticHeatingSource>();
+InputParameters validParams<PlasticHeatingSourceMiehe2016>();
 
 /**
- * This kernel calculates the heat source term corresponding to plastic deformation
+ * This kernel calculates the heat source term corresponding to plastic deformationa
+ * as in Miehe 2016
  */
-class PlasticHeatingSource : public HeatSource
+class PlasticHeatingSourceMiehe2016 : public HeatSource
 {
 public:
-  PlasticHeatingSource(const InputParameters & parameters);
+  PlasticHeatingSourceMiehe2016(const InputParameters & parameters);
 
 protected:
   virtual Real computeQpResidual();
@@ -38,6 +39,10 @@ private:
   const unsigned int _ndisp;
   std::vector<unsigned int> _disp_var;
 
+  /// couples damage phase field variable
+  const VariableValue & _cval;
+  const unsigned int _c_var;
+
 };
 
-#endif // PLASTICHEATINGSOURCE_H
+#endif // PLASTICHEATINGSOURCEMIEHE2016_H
