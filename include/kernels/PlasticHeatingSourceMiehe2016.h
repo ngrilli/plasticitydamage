@@ -11,8 +11,9 @@ template <>
 InputParameters validParams<PlasticHeatingSourceMiehe2016>();
 
 /**
- * This kernel calculates the heat source term corresponding to plastic deformationa
- * as in Miehe 2016
+ * This kernel calculates the heat source term corresponding to plastic deformation
+ * as in Miehe 2016: mechanical term: Cauchy stress * plastic strain_rate
+ * using finite strain formalism
  */
 class PlasticHeatingSourceMiehe2016 : public HeatSource
 {
@@ -28,20 +29,19 @@ private:
 
   std::string _base_name;
 
-  /// Contribution of plastic strain energy to damage evolution
-  const MaterialProperty<Real> & _W0p;
-  const MaterialProperty<Real> & _W0p_old;
+  /// Cauchy stress
+  const MaterialProperty<RankTwoTensor> & _stress;
 
-  /// Variation of plastic strain energy driving damage evolution with strain
-  const MaterialProperty<RankTwoTensor> * _dW0p_dstrain;
+  /// deformation gradient
+  const MaterialProperty<RankTwoTensor> & _deformation_gradient;
+
+  /// plastic deformation gradient
+  const MaterialProperty<RankTwoTensor> & _fp;
+  const MaterialProperty<RankTwoTensor> & _fp_old;
 
   /// Coupled displacement variables
   const unsigned int _ndisp;
   std::vector<unsigned int> _disp_var;
-
-  /// couples damage phase field variable
-  const VariableValue & _cval;
-  const unsigned int _c_var;
 
 };
 
