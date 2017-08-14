@@ -44,7 +44,7 @@ PlasticHeatingSourceMiehe2016::computeQpResidual()
   WpToTrace = _stress[_qp] * _fe * ( _fp[_qp] - _fp_old[_qp] ) * _fp_inv * _fe_inv * detFe;
 
   // plastic work rate
-  return WpToTrace.trace() / _dt * _test[_i][_qp];
+  return -WpToTrace.trace() / _dt * _test[_i][_qp];
 }
 
 Real
@@ -84,5 +84,5 @@ PlasticHeatingSourceMiehe2016::computeQpOffDiagJacobian(unsigned int jvar)
     }
   }
 
-  return val * _test[_i][_qp];
+  return -val * _test[_i][_qp];
 }
