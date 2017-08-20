@@ -265,11 +265,16 @@ FiniteStrainCrystalPlasticityDamagePrincipalStrains::calcResidual( RankTwoTensor
   //pk2_new.addIa(-1.0/3.0 * pk2_new.trace());
   //pk2_new.addIa( (_Bulk_Modulus_Ref/_n_Murnaghan) * ( 1.0 - std::pow( 1.0/_fe.det() , _n_Murnaghan ) ) );
 
-  //trD = ( _deformation_gradient[_qp].det() - _deformation_gradient_old[_qp].det() ) / _dt;
-  //trD /= _deformation_gradient_old[_qp].det();
+  // Calculate bulk viscosity damping
+  // C0 * dot(J) / J * |dot(J) / J| + C1 * dot(J) / J
+  // C0 should be chosen of the order of rho * Le^2, rho = density, Le = element size
+  // C1 should be chosen of the order of rho * Le * cs, cs = sound speed
+  // Maheo et al. Mechanics Research Communications 38 (2011) 81 88
+  trD = ( _deformation_gradient[_qp].det() - _deformation_gradient_old[_qp].det() ) / _dt;
+  trD /= _deformation_gradient_old[_qp].det();
 
-  //pk2_new.addIa( _C0 * trD * trD );
-  //pk2_new.addIa( _C1 * abs(trD) );
+  pk2_new.addIa( _C0 * trD * std::abs(trD) );
+  pk2_new.addIa( _C1 * trD );
 
   resid = _pk2_tmp - pk2_new;
 }
