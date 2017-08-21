@@ -38,6 +38,7 @@ FiniteStrainCrystalPlasticityDamagePrincipalStrains::FiniteStrainCrystalPlastici
     _dW0e_dstrain(declareProperty<RankTwoTensor>("dW0e_dstrain")),
     _dW0p_dstrain(declareProperty<RankTwoTensor>("dW0p_dstrain")),
     _pk2_undamaged(declareProperty<RankTwoTensor>("pk2_undamaged")), // undamaged 2nd Piola Kirchoff Stress
+    _fe_out(declareProperty<RankTwoTensor>("fe_out")), // Elastic deformation gradient for output
     _etens(LIBMESH_DIM),
     _epos(LIBMESH_DIM),
     _eigval(LIBMESH_DIM)
@@ -188,6 +189,7 @@ FiniteStrainCrystalPlasticityDamagePrincipalStrains::calcResidual( RankTwoTensor
   iden.addIa(1.0);
 
   _fe = _dfgrd_tmp * _fp_prev_inv; // _fp_inv  ==> _fp_prev_inv
+  _fe_out[_qp] = _fe; // Elastic deformation gradient for output
 
   ce = _fe.transpose() * _fe;
   ce_pk2 = ce * _pk2_tmp;

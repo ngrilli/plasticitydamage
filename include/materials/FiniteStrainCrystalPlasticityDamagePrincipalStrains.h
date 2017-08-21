@@ -78,6 +78,7 @@ protected:
   MaterialProperty<RankTwoTensor> & _dW0e_dstrain;
   MaterialProperty<RankTwoTensor> & _dW0p_dstrain;
   MaterialProperty<RankTwoTensor> & _pk2_undamaged;
+  MaterialProperty<RankTwoTensor> & _fe_out; // Elastic deformation gradient for output
 
   Real _W0p_tmp;
   Real _W0p_tmp_old;
