@@ -41,11 +41,11 @@
 #include "CrackFrictionHeatSource.h"
 #include "CrackPropagationHeatSource.h"
 #include "PlasticHeatingSource.h"
+#include "ArrheniusHeatEnergy.h"
 #include "PlasticHeatingSourceMiehe2016.h"
 #include "ComputeCrackFrictionHeatEnergy.h"
 #include "ComputeCrackFrictionHeatEnergyDienes.h"
 #include "ComputeExtraStressEOS.h"
-//#include "ComputeStressEosBase.h"
 #include "ThermalExpansionHeatSource.h"
 
 template <>
@@ -127,6 +127,7 @@ plasticitydamageApp::registerObjects(Factory & factory)
   registerKernel(CrackFrictionHeatSource);
   registerKernel(CrackPropagationHeatSource);
   registerKernel(PlasticHeatingSource);
+  registerKernel(ArrheniusHeatEnergy);
   registerKernel(PlasticHeatingSourceMiehe2016);
   registerKernel(ThermalExpansionHeatSource);
 
