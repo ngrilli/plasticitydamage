@@ -82,18 +82,6 @@ protected:
   const Real _visco;
   const Real _Wc;
 
-  // exponent in Murnaghan EOS
-  const Real _n_Murnaghan;
-
-  // reference bulk modulus
-  const Real _Bulk_Modulus_Ref;
-
-  // Von Neumann coefficient
-  const Real _C0;
-
-  // Landshoff coefficient
-  const Real _C1;
-
   MaterialProperty<Real> & _W0e;
   MaterialProperty<Real> & _W0e_old;
   MaterialProperty<Real> & _W0p;
