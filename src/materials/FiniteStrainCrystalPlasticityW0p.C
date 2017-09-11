@@ -15,10 +15,6 @@ InputParameters validParams<FiniteStrainCrystalPlasticityW0p>()
   params.addClassDescription("Crystal Plasticity base class: FCC system with power law flow rule implemented. Damage. Miehe 2016");
   params.addRequiredCoupledVar("c","Order parameter for damage");
   params.addParam<Real>("kdamage",1e-6,"Stiffness of damaged matrix");
-  params.addRequiredParam<Real>("n_Murnaghan", "exponent in Murnaghan EOS");
-  params.addRequiredParam<Real>("bulk_modulus_ref", "reference bulk modulus");
-  params.addRequiredParam<Real>("C0", "Von Neuman coefficient");
-  params.addRequiredParam<Real>("C1", "Landshoff coefficient");
 
   return params;
 }
@@ -27,10 +23,6 @@ FiniteStrainCrystalPlasticityW0p::FiniteStrainCrystalPlasticityW0p(const InputPa
     FiniteStrainCrystalPlasticity(parameters),
     _c(coupledValue("c")),
     _kdamage(getParam<Real>("kdamage")),
-    _n_Murnaghan(getParam<Real>("n_Murnaghan")),
-    _Bulk_Modulus_Ref(getParam<Real>("bulk_modulus_ref")),
-    _C0(getParam<Real>("C0")),
-    _C1(getParam<Real>("C1")),
     _W0e(declareProperty<Real>("W0e")), // elastic energy
     _W0p(declareProperty<Real>("W0p")), // plastic energy
     _W0p_old(declarePropertyOld<Real>("W0p")), // plastic energy of previous increment
@@ -218,38 +210,7 @@ FiniteStrainCrystalPlasticityW0p::calcResidual( RankTwoTensor &resid )
   _fp_inv = _fp_old_inv * eqv_slip_incr;
   _fe = _dfgrd_tmp * _fp_inv;
 
-  //ce.symmetricEigenvaluesEigenvectors(_eigval, _eigvec);
-
-  //for (unsigned int i = 0; i < LIBMESH_DIM; ++i)
-  //{
-  //  _eigval[i] = ( _eigval[i] - 1.0 ) / 2.0;
-  //}
-
-  // Tensors of outerproduct of eigen vectors
-  //for (unsigned int i = 0; i < LIBMESH_DIM; ++i)
-  //  for (unsigned int j = 0; j < LIBMESH_DIM; ++j)
-  //    for (unsigned int k = 0; k < LIBMESH_DIM; ++k)
-  //      _etens[i](j, k) = _eigvec(j, i) * _eigvec(k, i);
-
-  //RankTwoTensor ee0pos, ee0neg;
-  //ee0pos.zero();
-  //ee0neg.zero();
-  //for (unsigned int i = 0; i < LIBMESH_DIM; ++i)
-  //{
-  //  ee0pos += _etens[i] * ( std::abs(_eigval[i]) + _eigval[i] ) / 2.0;
-  //  ee0neg += _etens[i] * ( std::abs(_eigval[i]) - _eigval[i] ) / 2.0;
-  //}
-
   pk2_new = _elasticity_tensor[_qp] * ee;
-
-  //pk2_new.addIa(-1.0/3.0 * pk2_new.trace());
-  //pk2_new.addIa( (_Bulk_Modulus_Ref/_n_Murnaghan) * ( 1.0 - std::pow( 1.0/_fe.det() , _n_Murnaghan ) ) );
-
-  //trD = ( _deformation_gradient[_qp].det() - _deformation_gradient_old[_qp].det() ) / _dt;
-  //trD /= _deformation_gradient_old[_qp].det();
-
-  //pk2_new.addIa( _C0 * trD * trD );
-  //pk2_new.addIa( _C1 * abs(trD) );
 
   resid = _pk2_tmp - pk2_new;
 }

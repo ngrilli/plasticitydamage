@@ -9,20 +9,11 @@
 #include "CrystalPlasticityStateVarRateComponentDislo.h"
 #include "NSMomentumInviscidFluxWithoutP.h"
 #include "InertialForceCompressible.h"
-#include "FiniteStrainCrystalPlasticityEOS.h"
-#include "FiniteStrainCrystalPlasticityBulkViscosity.h"
-#include "FiniteStrainCrystalPlasticityEOSBulkViscosity.h"
-#include "FiniteStrainCrystalPlasticityEOSBulkViscosityFdot.h"
-#include "FiniteStrainCrystalPlasticityEOSBulkViscositySigned.h"
-#include "FiniteStrainCrystalPlasticityEOSquadC0.h"
 #include "FiniteStrainCrystalPlasticityPhonon.h"
 #include "FiniteStrainCrystalPlasticityDamage.h"
 #include "FiniteStrainCrystalPlasticityMcAuliffe.h"
 #include "FiniteStrainCrystalPlasticityW0p.h"
 #include "FiniteStrainCrystalPlasticityDamagePrincipalStrains.h"
-#include "FiniteStrainCrystalPlasticityFromEos.h"
-#include "LinearIsoElasticPFDamageEOS.h"
-#include "LinearIsoElasticPFDamageEOSBulkViscosity.h"
 #include "LinearIsoElasticPFAmor.h"
 #include "LinearIsoElasticPFDamageNoc.h"
 #include "LinearIsoElasticPFDamageMiehe.h"
@@ -39,14 +30,13 @@
 #include "damageICxyz.h"
 #include "CrystalPlasticityPFDamageMiehe.h"
 #include "CrackFrictionHeatSource.h"
-#include "CrackPropagationHeatSource.h"
+#include "CrackPropagationHeatSourceNoDevel.h"
 #include "PlasticHeatingSource.h"
 #include "ArrheniusHeatEnergy.h"
 #include "ArrheniusMassFraction.h"
 #include "PlasticHeatingSourceMiehe2016.h"
 #include "ComputeCrackFrictionHeatEnergy.h"
 #include "ComputeCrackFrictionHeatEnergyDienes.h"
-#include "ComputeExtraStressEOS.h"
 #include "ThermalExpansionHeatSource.h"
 
 template <>
@@ -91,28 +81,17 @@ plasticitydamageApp__registerObjects(Factory & factory)
 void
 plasticitydamageApp::registerObjects(Factory & factory)
 {
-  registerMaterial(FiniteStrainCrystalPlasticityEOS);
-  registerMaterial(FiniteStrainCrystalPlasticityBulkViscosity);
-  registerMaterial(FiniteStrainCrystalPlasticityEOSBulkViscosity);
-  registerMaterial(FiniteStrainCrystalPlasticityEOSBulkViscosityFdot);
-  registerMaterial(FiniteStrainCrystalPlasticityEOSBulkViscositySigned);
-  registerMaterial(FiniteStrainCrystalPlasticityEOSquadC0);
   registerMaterial(FiniteStrainCrystalPlasticityPhonon);
   registerMaterial(FiniteStrainCrystalPlasticityDamage);
   registerMaterial(FiniteStrainCrystalPlasticityMcAuliffe);
   registerMaterial(FiniteStrainCrystalPlasticityW0p);
   registerMaterial(FiniteStrainCrystalPlasticityDamagePrincipalStrains);
-  registerMaterial(FiniteStrainCrystalPlasticityFromEos);
-  registerMaterial(LinearIsoElasticPFDamageEOS);
-  registerMaterial(LinearIsoElasticPFDamageEOSBulkViscosity);
   registerMaterial(LinearIsoElasticPFAmor);
   registerMaterial(LinearIsoElasticPFDamageNoc);
   registerMaterial(LinearIsoElasticPFDamageMiehe);
   registerMaterial(CrystalPlasticityPFDamageMiehe);
   registerMaterial(ComputeCrackFrictionHeatEnergy);
   registerMaterial(ComputeCrackFrictionHeatEnergyDienes);
-  registerMaterial(ComputeExtraStressEOS);
-  //registerMaterial(ComputeStressEosBase);
 
   registerKernel(NSMomentumInviscidFluxWithoutP);
   registerKernel(InertialForceCompressible);
@@ -126,7 +105,7 @@ plasticitydamageApp::registerObjects(Factory & factory)
   registerKernel(PFFracBulkRateCAux);
   registerKernel(PFFracBulkRateMiehe);
   registerKernel(CrackFrictionHeatSource);
-  registerKernel(CrackPropagationHeatSource);
+  registerKernel(CrackPropagationHeatSourceNoDevel);
   registerKernel(PlasticHeatingSource);
   registerKernel(ArrheniusHeatEnergy);
   registerKernel(ArrheniusMassFraction);

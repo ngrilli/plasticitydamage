@@ -1,22 +1,22 @@
-#ifndef CRACKPROPAGATIONHEATSOURCE_H
-#define CRACKPROPAGATIONHEATSOURCE_H
+#ifndef CRACKPROPAGATIONHEATSOURCENODEVEL_H
+#define CRACKPROPAGATIONHEATSOURCENODEVEL_H
 
 #include "HeatSource.h"
 #include "RankTwoTensor.h"
 
 // Forward Declarations
-class CrackPropagationHeatSource;
+class CrackPropagationHeatSourceNoDevel;
 
 template <>
-InputParameters validParams<CrackPropagationHeatSource>();
+InputParameters validParams<CrackPropagationHeatSourceNoDevel>();
 
 /**
  * This kernel calculates the heat source term corresponding to crack friction
  */
-class CrackPropagationHeatSource : public HeatSource
+class CrackPropagationHeatSourceNoDevel : public HeatSource
 {
 public:
-  CrackPropagationHeatSource(const InputParameters & parameters);
+  CrackPropagationHeatSourceNoDevel(const InputParameters & parameters);
 
 protected:
   virtual Real computeQpResidual();
@@ -44,4 +44,4 @@ private:
 
 };
 
-#endif // CRACKPROPAGATIONHEATSOURCE_H
+#endif // CRACKPROPAGATIONHEATSOURCENODEVEL_H

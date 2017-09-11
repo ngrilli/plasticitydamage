@@ -13,20 +13,12 @@ InputParameters validParams<FiniteStrainCrystalPlasticityPhonon>()
 {
   InputParameters params = validParams<FiniteStrainCrystalPlasticity>();
   params.addClassDescription("Crystal Plasticity base class: max slip increment given by phonon drag");
-  params.addRequiredParam<Real>("n_Murnaghan", "exponent in Murnaghan EOS");
-  params.addRequiredParam<Real>("bulk_modulus_ref", "reference bulk modulus");
-  params.addRequiredParam<Real>("C0", "Von Neuman coefficient");
-  params.addRequiredParam<Real>("C1", "Landshoff coefficient");
 
   return params;
 }
 
 FiniteStrainCrystalPlasticityPhonon::FiniteStrainCrystalPlasticityPhonon(const InputParameters & parameters) :
-    FiniteStrainCrystalPlasticity(parameters),
-    _n_Murnaghan(getParam<Real>("n_Murnaghan")),
-    _Bulk_Modulus_Ref(getParam<Real>("bulk_modulus_ref")),
-    _C0(getParam<Real>("C0")),
-    _C1(getParam<Real>("C1"))
+    FiniteStrainCrystalPlasticity(parameters)
 {
 }
 
@@ -67,15 +59,6 @@ FiniteStrainCrystalPlasticityPhonon::calcResidual( RankTwoTensor &resid )
   ee *= 0.5;
 
   pk2_new = _elasticity_tensor[_qp] * ee;
-
-  pk2_new.addIa(-1.0/3.0 * pk2_new.trace());
-  pk2_new.addIa( (_Bulk_Modulus_Ref/_n_Murnaghan) * ( 1.0 - std::pow( 1.0/_fe.det() , _n_Murnaghan ) ) );
-
-  trD = ( _deformation_gradient[_qp].det() - _deformation_gradient_old[_qp].det() ) / _dt;
-  trD /= _deformation_gradient_old[_qp].det();
-
-  pk2_new.addIa( _C0 * trD * abs(trD) );
-  pk2_new.addIa( _C1 * trD );
 
   resid = _pk2_tmp - pk2_new;
 }

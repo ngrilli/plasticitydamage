@@ -15,10 +15,6 @@ InputParameters validParams<FiniteStrainCrystalPlasticityMcAuliffe>()
   params.addClassDescription("Crystal Plasticity class: McAuliffe and Waisman 2015");
   params.addRequiredCoupledVar("c","Order parameter for damage");
   params.addParam<Real>("kdamage",1e-6,"Stiffness of damaged matrix");
-  params.addRequiredParam<Real>("n_Murnaghan", "exponent in Murnaghan EOS");
-  params.addRequiredParam<Real>("bulk_modulus_ref", "reference bulk modulus");
-  params.addRequiredParam<Real>("C0", "Von Neuman coefficient");
-  params.addRequiredParam<Real>("C1", "Landshoff coefficient");
 
   return params;
 }
@@ -27,10 +23,6 @@ FiniteStrainCrystalPlasticityMcAuliffe::FiniteStrainCrystalPlasticityMcAuliffe(c
     FiniteStrainCrystalPlasticity(parameters),
     _c(coupledValue("c")),
     _kdamage(getParam<Real>("kdamage")),
-    _n_Murnaghan(getParam<Real>("n_Murnaghan")),
-    _Bulk_Modulus_Ref(getParam<Real>("bulk_modulus_ref")),
-    _C0(getParam<Real>("C0")),
-    _C1(getParam<Real>("C1")),
     _W0e(declareProperty<Real>("W0e")), // elastic energy
     _W0p(declareProperty<Real>("W0p")), // plastic energy
     _W0p_old(declarePropertyOld<Real>("W0p")), // plastic energy of previous increment

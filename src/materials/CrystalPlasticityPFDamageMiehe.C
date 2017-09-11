@@ -21,10 +21,6 @@ InputParameters validParams<CrystalPlasticityPFDamageMiehe>()
   params.addRequiredParam<Real>("Wc","Threshold fracture energy");
   params.addRequiredParam<MaterialPropertyName>("gc_prop_var","Material property name with gc value");
   params.addParam<Real>("kdamage",1e-6,"Stiffness of damaged matrix");
-  params.addRequiredParam<Real>("n_Murnaghan", "exponent in Murnaghan EOS");
-  params.addRequiredParam<Real>("bulk_modulus_ref", "reference bulk modulus");
-  params.addRequiredParam<Real>("C0", "Von Neuman coefficient");
-  params.addRequiredParam<Real>("C1", "Landshoff coefficient");
 
   return params;
 }
@@ -46,10 +42,6 @@ CrystalPlasticityPFDamageMiehe::CrystalPlasticityPFDamageMiehe(const InputParame
     _l(getParam<Real>("l")),
     _visco(getParam<Real>("visco")),
     _Wc(getParam<Real>("Wc")),
-    _n_Murnaghan(getParam<Real>("n_Murnaghan")),
-    _Bulk_Modulus_Ref(getParam<Real>("bulk_modulus_ref")),
-    _C0(getParam<Real>("C0")),
-    _C1(getParam<Real>("C1")),
     _W0e(declareProperty<Real>("W0e")), // elastic energy
     _W0e_old(declarePropertyOld<Real>("W0e")), // elastic energy of previous increment
     _W0p(declareProperty<Real>("W0p")), // plastic energy
@@ -364,16 +356,7 @@ CrystalPlasticityPFDamageMiehe::calcResidual( RankTwoTensor & resid )
 
   pk2_new = _elasticity_tensor[_qp] * ee;
 
-  pk2_new.addIa(-1.0/3.0 * pk2_new.trace());
-  pk2_new.addIa( (_Bulk_Modulus_Ref/_n_Murnaghan) * ( 1.0 - std::pow( 1.0/_fe.det() , _n_Murnaghan ) ) );
-
   pk2_new = xfac * pk2_new;
-
-  trD = ( _dfgrd_tmp.det() - _dfgrd_tmp_old_substep.det() ) / _dt;
-  trD /= _dfgrd_tmp_old_substep.det();
-
-  pk2_new.addIa( _C0 * trD * trD );
-  pk2_new.addIa( _C1 * abs(trD) );
 
   resid = _pk2_tmp - pk2_new;
 }

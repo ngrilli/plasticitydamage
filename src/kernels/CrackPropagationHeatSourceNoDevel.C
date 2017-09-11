@@ -1,8 +1,8 @@
-#include "CrackPropagationHeatSource.h"
+#include "CrackPropagationHeatSourceNoDevel.h"
 
 template <>
 InputParameters
-validParams<CrackPropagationHeatSource>()
+validParams<CrackPropagationHeatSourceNoDevel>()
 {
   InputParameters params = validParams<HeatSource>();
   params.addClassDescription("Crack propagation heat source kernel");
@@ -12,7 +12,7 @@ validParams<CrackPropagationHeatSource>()
   return params;
 }
 
-CrackPropagationHeatSource::CrackPropagationHeatSource(const InputParameters & parameters)
+CrackPropagationHeatSourceNoDevel::CrackPropagationHeatSourceNoDevel(const InputParameters & parameters)
   : HeatSource(parameters),
     _base_name(isParamValid("base_name") ? getParam<std::string>("base_name") + "_" : ""),
     _c(coupledValue("c")),
@@ -30,7 +30,7 @@ CrackPropagationHeatSource::CrackPropagationHeatSource(const InputParameters & p
 }
 
 Real
-CrackPropagationHeatSource::computeQpResidual()
+CrackPropagationHeatSourceNoDevel::computeQpResidual()
 {
   Real ddot, heat_source_rate;
 
@@ -46,13 +46,13 @@ CrackPropagationHeatSource::computeQpResidual()
 }
 
 Real
-CrackPropagationHeatSource::computeQpJacobian()
+CrackPropagationHeatSourceNoDevel::computeQpJacobian()
 {
   return -0.0 * _phi[_j][_qp] * _test[_i][_qp];
 }
 
 Real
-CrackPropagationHeatSource::computeQpOffDiagJacobian(unsigned int jvar)
+CrackPropagationHeatSourceNoDevel::computeQpOffDiagJacobian(unsigned int jvar)
 {
   Real val, ddot, dRdd;
   unsigned int i, j, l, h, c_comp;

@@ -55,18 +55,6 @@ protected:
   /// Small number to avoid non-positive definiteness at or near complete damage
   Real _kdamage;
 
-  // exponent in Murnaghan EOS
-  const Real _n_Murnaghan;
-
-  // reference bulk modulus
-  const Real _Bulk_Modulus_Ref;
-
-  // Von Neumann coefficient
-  const Real _C0;
-
-  // Landshoff coefficient
-  const Real _C1;
-
   MaterialProperty<Real> & _W0e;
   MaterialProperty<Real> & _W0p;
   MaterialProperty<Real> & _W0p_old;
