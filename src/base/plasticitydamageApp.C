@@ -37,6 +37,7 @@
 #include "PlasticHeatingSourceMiehe2016.h"
 #include "ComputeCrackFrictionHeatEnergy.h"
 #include "ComputeCrackFrictionHeatEnergyDienes.h"
+#include "ComputeCrackFrictionHeatEnergyDienesFiniteStrain.h"
 #include "ThermalExpansionHeatSource.h"
 
 template <>
@@ -92,6 +93,7 @@ plasticitydamageApp::registerObjects(Factory & factory)
   registerMaterial(CrystalPlasticityPFDamageMiehe);
   registerMaterial(ComputeCrackFrictionHeatEnergy);
   registerMaterial(ComputeCrackFrictionHeatEnergyDienes);
+  registerMaterial(ComputeCrackFrictionHeatEnergyDienesFiniteStrain);
 
   registerKernel(NSMomentumInviscidFluxWithoutP);
   registerKernel(InertialForceCompressible);
