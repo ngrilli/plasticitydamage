@@ -39,6 +39,7 @@
 #include "ComputeCrackFrictionHeatEnergyDienes.h"
 #include "ComputeCrackFrictionHeatEnergyDienesFiniteStrain.h"
 #include "ThermalExpansionHeatSource.h"
+#include "PFThermalConductivityCompressive.h"
 
 template <>
 InputParameters
@@ -94,6 +95,7 @@ plasticitydamageApp::registerObjects(Factory & factory)
   registerMaterial(ComputeCrackFrictionHeatEnergy);
   registerMaterial(ComputeCrackFrictionHeatEnergyDienes);
   registerMaterial(ComputeCrackFrictionHeatEnergyDienesFiniteStrain);
+  registerMaterial(PFThermalConductivityCompressive);
 
   registerKernel(NSMomentumInviscidFluxWithoutP);
   registerKernel(InertialForceCompressible);
