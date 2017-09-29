@@ -61,7 +61,7 @@ protected:
 
   MaterialProperty<Real> & _W0e;
   MaterialProperty<Real> & _W0p;
-  MaterialProperty<Real> & _W0p_old;
+  const MaterialProperty<Real> & _W0p_old;
   MaterialProperty<RankTwoTensor> & _dstress_dc;
   MaterialProperty<RankTwoTensor> & _dW0e_dstrain;
   MaterialProperty<RankTwoTensor> & _dW0p_dstrain;

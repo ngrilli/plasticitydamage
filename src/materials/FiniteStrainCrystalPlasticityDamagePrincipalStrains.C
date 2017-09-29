@@ -25,7 +25,7 @@ FiniteStrainCrystalPlasticityDamagePrincipalStrains::FiniteStrainCrystalPlastici
     _kdamage(getParam<Real>("kdamage")),
     _W0e(declareProperty<Real>("W0e")), // elastic energy
     _W0p(declareProperty<Real>("W0p")), // plastic energy
-    _W0p_old(declarePropertyOld<Real>("W0p")), // plastic energy of previous increment
+    _W0p_old(getMaterialPropertyOld<Real>("W0p")), // plastic energy of previous increment
     _dstress_dc(declarePropertyDerivative<RankTwoTensor>(_base_name + "stress", getVar("c", 0)->name())),
     _dW0e_dstrain(declareProperty<RankTwoTensor>("dW0e_dstrain")),
     _dW0p_dstrain(declareProperty<RankTwoTensor>("dW0p_dstrain")),
