@@ -34,6 +34,7 @@
 #include "PlasticHeatingSource.h"
 #include "ArrheniusHeatEnergy.h"
 #include "ArrheniusMassFraction.h"
+#include "ArrheniusMassFractionRateLimit.h"
 #include "PlasticHeatingSourceMiehe2016.h"
 #include "ComputeCrackFrictionHeatEnergy.h"
 #include "ComputeCrackFrictionHeatEnergyDienes.h"
@@ -113,6 +114,7 @@ plasticitydamageApp::registerObjects(Factory & factory)
   registerKernel(PlasticHeatingSource);
   registerKernel(ArrheniusHeatEnergy);
   registerKernel(ArrheniusMassFraction);
+  registerKernel(ArrheniusMassFractionRateLimit);
   registerKernel(PlasticHeatingSourceMiehe2016);
   registerKernel(ThermalExpansionHeatSource);
 
