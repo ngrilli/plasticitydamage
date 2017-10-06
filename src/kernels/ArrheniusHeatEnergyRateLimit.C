@@ -49,7 +49,7 @@ ArrheniusHeatEnergyRateLimit::computeQpResidual()
   reaction_rate = mass_fraction * _exponential_prefactor
          * std::exp(_exponential_coefficient - _exponential_factor / temperature);
 
-  reaction_rate = std::max(reaction_rate,_rate_limit);
+  reaction_rate = std::min(reaction_rate,_rate_limit);
 
   return -_test[_i][_qp] * reaction_rate;
 }
