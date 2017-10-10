@@ -16,82 +16,53 @@ validParams<ArrheniusMassFractionRateLimit>()
   InputParameters params = validParams<Kernel>();
   params.addClassDescription("Chemical reaction mass fraction decrease rate: Arrhenius equation with rate limit");
   params.addParam<std::string>("base_name", "Material property base name");
+  params.addRequiredCoupledVar("mass_fraction",
+                               "Mass fraction of the reactant");
   params.addRequiredCoupledVar("temperature",
                                "Temperature");
-  params.addParam<Real>("exponential_prefactor", 0.0, "Exponential prefactor in Arrhenius");
-  params.addParam<Real>("exponential_coefficient", 0.0, "Exponential coefficient in Arrhenius");
-  params.addParam<Real>("exponential_factor", 0.0, "Exponential factor in Arrhenius");
-  params.addParam<Real>("rate_limit", 1.0e9, "Upper threshold for the reaction rate");
+  params.addRequiredParam<MaterialPropertyName>(
+    "mass_fraction_rate", "Decrease rate of the mass fraction due to chemistry");
+  params.addParam<MaterialPropertyName>(
+    "dmass_fraction_rate_dtemperature", "Material property name with derivative of mass_fraction_rate with temperature");
+  params.addParam<MaterialPropertyName>(
+    "dmass_fraction_rate_dmass_fraction", "Material property name with derivative of mass_fraction_rate with mass fraction");
   return params;
 }
 
 ArrheniusMassFractionRateLimit::ArrheniusMassFractionRateLimit(const InputParameters & parameters)
-  : Kernel(parameters),
+  : DerivativeMaterialInterface<Kernel>(parameters),
     _base_name(isParamValid("base_name") ? getParam<std::string>("base_name") + "_" : ""),
+    _mass_fraction(coupledValue("mass_fraction")),
+    _mass_fraction_var(coupled("mass_fraction")),
+    _mass_fraction_name(getVar("mass_fraction", 0)->name()),
     _temperature(coupledValue("temperature")),
     _temperature_var(coupled("temperature")),
-    _exponential_prefactor(getParam<Real>("exponential_prefactor")),
-    _exponential_coefficient(getParam<Real>("exponential_coefficient")),
-    _exponential_factor(getParam<Real>("exponential_factor")),
-    _rate_limit(getParam<Real>("rate_limit"))
+    _temperature_name(getVar("temperature", 0)->name()),
+    _mass_fraction_rate(getMaterialProperty<Real>(_base_name + "mass_fraction_rate")),
+    _dmass_fraction_rate_dtemperature(
+        getMaterialPropertyDerivative<Real>(_base_name + "mass_fraction_rate", _temperature_name)),
+    _dmass_fraction_rate_dmass_fraction(
+        getMaterialPropertyDerivative<Real>(_base_name + "mass_fraction_rate", _mass_fraction_name))
 {
 }
 
 Real
 ArrheniusMassFractionRateLimit::computeQpResidual()
 {
-  Real mass_fraction = _u[_qp];
-  Real reaction_rate;
-
-  if (mass_fraction < 0.0) mass_fraction = 0.0; // check positive mass fraction
-
-  reaction_rate = mass_fraction * _exponential_prefactor
-         * std::exp(_exponential_coefficient - _exponential_factor / _temperature[_qp]);
-
-  reaction_rate = std::min(reaction_rate,_rate_limit);
-
-  return _test[_i][_qp] * reaction_rate;
+  return _test[_i][_qp] * _mass_fraction_rate[_qp];
 }
 
 Real
 ArrheniusMassFractionRateLimit::computeQpJacobian()
 {
-  const Real & mass_fraction = _u[_qp];
-  Real reaction_rate, exponential_rate;
-
-  exponential_rate = _exponential_prefactor
-         * std::exp(_exponential_coefficient - _exponential_factor / _temperature[_qp]);
-
-  reaction_rate = mass_fraction * exponential_rate;
-
-  if (reaction_rate < _rate_limit && mass_fraction > 0.0) {
-    return _test[_i][_qp] * _phi[_j][_qp] * exponential_rate;
-  }
-  else {
-    return 0.0;
-  }
+  return _test[_i][_qp] * _phi[_j][_qp] * _dmass_fraction_rate_dmass_fraction[_qp];
 }
 
 Real
 ArrheniusMassFractionRateLimit::computeQpOffDiagJacobian(unsigned int jvar)
 {
-  const Real & mass_fraction = _u[_qp];
-  Real reaction_rate, exponential_rate;
-
-  exponential_rate = _exponential_prefactor
-         * std::exp(_exponential_coefficient - _exponential_factor / _temperature[_qp]);
-
-  reaction_rate = mass_fraction * exponential_rate;
-
   if (jvar == _temperature_var) {
-    if (reaction_rate < _rate_limit && mass_fraction > 0.0) {
-      return _test[_i][_qp] * reaction_rate
-             * (_exponential_factor / (_temperature[_qp] * _temperature[_qp])) * _phi[_j][_qp];
-    }
-    else {
-      return 0.0;
-    }
+      return _test[_i][_qp] * _phi[_j][_qp] * _dmass_fraction_rate_dtemperature[_qp];
   }
-
   return 0.0;
 }
