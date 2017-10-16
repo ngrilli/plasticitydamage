@@ -33,6 +33,7 @@
 #include "CrackPropagationHeatSourceNoDevel.h"
 #include "PlasticHeatingSource.h"
 #include "ComputeArrheniusMassFractionRateLimit.h"
+#include "ComputeArrheniusMassFractionRateLimit3species.h"
 #include "ArrheniusHeatEnergy.h"
 #include "ArrheniusMassFraction.h"
 #include "ArrheniusMassFractionRateLimit.h"
@@ -100,6 +101,7 @@ plasticitydamageApp::registerObjects(Factory & factory)
   registerMaterial(ComputeCrackFrictionHeatEnergyDienesFiniteStrain);
   registerMaterial(PFThermalConductivityCompressive);
   registerMaterial(ComputeArrheniusMassFractionRateLimit);
+  registerMaterial(ComputeArrheniusMassFractionRateLimit3species);
 
   registerKernel(NSMomentumInviscidFluxWithoutP);
   registerKernel(InertialForceCompressible);
