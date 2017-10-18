@@ -68,9 +68,9 @@ ComputeArrheniusMassFractionRateLimit3species::ComputeArrheniusMassFractionRateL
 void
 ComputeArrheniusMassFractionRateLimit3species::computeQpProperties()
 {
-  Real mass_fraction_1 = _mass_fraction_1[_qp];
-  Real mass_fraction_2 = _mass_fraction_2[_qp];
-  Real mass_fraction_3 = _mass_fraction_3[_qp];
+  Real mass_fraction_1 = std::max(_mass_fraction_1[_qp],0.0);
+  Real mass_fraction_2 = std::max(_mass_fraction_2[_qp],0.0);
+  Real mass_fraction_3 = std::max(_mass_fraction_3[_qp],0.0);
   Real exp_reaction_rate;
 
   exp_reaction_rate = _exponential_prefactor
@@ -80,22 +80,16 @@ ComputeArrheniusMassFractionRateLimit3species::computeQpProperties()
 
   _mass_fraction_rate[_qp] = exp_reaction_rate;
 
-  if (mass_fraction_1 <= 0.0 || _nu_1 <= 0.0) {
-      mass_fraction_1 = 0.0; // check positive mass fraction 1 or zero exponent
-  } else {
-      _mass_fraction_rate[_qp] *= std::pow(mass_fraction_1,_nu_1);
+  if (_nu_1 > 0.0) { // mass fraction 1 is present in the rate equation
+    _mass_fraction_rate[_qp] *= std::pow(mass_fraction_1,_nu_1);
   }
 
-  if (mass_fraction_2 <= 0.0 || _nu_2 <= 0.0) {
-      mass_fraction_2 = 0.0; // check positive mass fraction 2 or zero exponent
-  } else {
-      _mass_fraction_rate[_qp] *= std::pow(mass_fraction_2,_nu_2);
+  if (_nu_2 > 0.0) { // mass fraction 2 is present in the rate equation
+    _mass_fraction_rate[_qp] *= std::pow(mass_fraction_2,_nu_2);
   }
 
-  if (mass_fraction_3 <= 0.0 || _nu_3 <= 0.0) {
-      mass_fraction_3 = 0.0; // check positive mass fraction 3 or zero exponent
-  } else {
-      _mass_fraction_rate[_qp] *= std::pow(mass_fraction_3,_nu_3);
+  if (_nu_3 > 0.0) { // mass fraction 3 is present in the rate equation
+    _mass_fraction_rate[_qp] *= std::pow(mass_fraction_3,_nu_3);
   }
 
   _dmass_fraction_rate_dmass_fraction_1[_qp] = 0.0;
