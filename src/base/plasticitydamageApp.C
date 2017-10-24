@@ -43,6 +43,7 @@
 #include "PlasticHeatingSourceMiehe2016.h"
 #include "ComputeCrackFrictionHeatEnergy.h"
 #include "ComputeCrackFrictionHeatEnergyDienes.h"
+#include "ComputeCrackFrictionHeatEnergyDienes3D.h"
 #include "ComputeCrackFrictionHeatEnergyDienesFiniteStrain.h"
 #include "ThermalExpansionHeatSource.h"
 #include "PFThermalConductivityCompressive.h"
@@ -101,6 +102,7 @@ plasticitydamageApp::registerObjects(Factory & factory)
   registerMaterial(CrystalPlasticityPFDamageMiehe);
   registerMaterial(ComputeCrackFrictionHeatEnergy);
   registerMaterial(ComputeCrackFrictionHeatEnergyDienes);
+  registerMaterial(ComputeCrackFrictionHeatEnergyDienes3D);
   registerMaterial(ComputeCrackFrictionHeatEnergyDienesFiniteStrain);
   registerMaterial(PFThermalConductivityCompressive);
   registerMaterial(ComputeArrheniusMassFractionRateLimit);
