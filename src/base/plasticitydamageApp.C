@@ -30,6 +30,7 @@
 #include "damageICxyz.h"
 #include "CrystalPlasticityPFDamageMiehe.h"
 #include "CrackFrictionHeatSource.h"
+#include "CrackFrictionHeatSource3D.h"
 #include "CrackPropagationHeatSourceNoDevel.h"
 #include "PlasticHeatingSource.h"
 #include "ComputeArrheniusMassFractionRateLimit.h"
@@ -121,6 +122,7 @@ plasticitydamageApp::registerObjects(Factory & factory)
   registerKernel(PFFracBulkRateCAux);
   registerKernel(PFFracBulkRateMiehe);
   registerKernel(CrackFrictionHeatSource);
+  registerKernel(CrackFrictionHeatSource3D);
   registerKernel(CrackPropagationHeatSourceNoDevel);
   registerKernel(PlasticHeatingSource);
   registerKernel(ArrheniusHeatEnergy);
