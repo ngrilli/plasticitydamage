@@ -14,6 +14,7 @@
  * and solves the PK2 stress residual equation at the intermediate configuration to evolve the material state.
  * The internal variables are updated using an interative predictor-corrector algorithm.
  * Backward Euler integration rule is used for the rate equations.
+ * added plastic work and bulk viscosity
  */
 class FiniteStrainCrystalPlasticityW0p;
 
@@ -53,25 +54,21 @@ protected:
 
   virtual void getSlipIncrements();
 
-  const VariableValue & _c;
+  // Von Neumann coefficient
+  const Real _C0;
 
-  /// Small number to avoid non-positive definiteness at or near complete damage
-  Real _kdamage;
+  // Landshoff coefficient
+  const Real _C1;
 
   MaterialProperty<Real> & _W0e;
   MaterialProperty<Real> & _W0p;
-  MaterialProperty<Real> & _W0p_old;
-  MaterialProperty<RankTwoTensor> & _dstress_dc;
+  const MaterialProperty<Real> & _W0p_old;
   MaterialProperty<RankTwoTensor> & _dW0e_dstrain;
   MaterialProperty<RankTwoTensor> & _dW0p_dstrain;
 
   Real _W0p_tmp;
   Real _W0p_tmp_old;
-
-  std::vector<RankTwoTensor> _etens;
-  std::vector<Real> _eigval;
-  RankTwoTensor _eigvec;
-
+  Real _dt_original;
 };
 
 #endif //FINITESTRAINCRYSTALPLASTICITYW0P_H

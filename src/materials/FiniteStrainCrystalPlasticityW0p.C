@@ -12,26 +12,23 @@ template<>
 InputParameters validParams<FiniteStrainCrystalPlasticityW0p>()
 {
   InputParameters params = validParams<FiniteStrainCrystalPlasticity>();
-  params.addClassDescription("Crystal Plasticity base class: FCC system with power law flow rule implemented. Damage. Miehe 2016");
-  params.addRequiredCoupledVar("c","Order parameter for damage");
-  params.addParam<Real>("kdamage",1e-6,"Stiffness of damaged matrix");
+  params.addClassDescription("Crystal Plasticity base class: FCC system with power law flow rule implemented. Plastic energy "
+                             "and bulk viscosity damping");
 
   return params;
 }
 
 FiniteStrainCrystalPlasticityW0p::FiniteStrainCrystalPlasticityW0p(const InputParameters & parameters) :
     FiniteStrainCrystalPlasticity(parameters),
-    _c(coupledValue("c")),
-    _kdamage(getParam<Real>("kdamage")),
+    _C0(getParam<Real>("C0")),
+    _C1(getParam<Real>("C1")),
     _W0e(declareProperty<Real>("W0e")), // elastic energy
     _W0p(declareProperty<Real>("W0p")), // plastic energy
-    _W0p_old(declarePropertyOld<Real>("W0p")), // plastic energy of previous increment
-    _dstress_dc(declarePropertyDerivative<RankTwoTensor>(_base_name + "stress", getVar("c", 0)->name())),
+    _W0p_old(getMaterialPropertyOld<Real>("W0p")), // plastic energy of previous increment
     _dW0e_dstrain(declareProperty<RankTwoTensor>("dW0e_dstrain")),
-    _dW0p_dstrain(declareProperty<RankTwoTensor>("dW0p_dstrain")),
-    _etens(LIBMESH_DIM),
-    _eigval(LIBMESH_DIM)
+    _dW0p_dstrain(declareProperty<RankTwoTensor>("dW0p_dstrain"))
 {
+  _dt_original = _dt;
 }
 
 void
@@ -135,8 +132,7 @@ void
 FiniteStrainCrystalPlasticityW0p::update_energies()
 {
   RankTwoTensor cauchy_stress, WpToTrace, invFe, ee, ce, iden;
-  Real detFe, detFe_old;
-  Real c = _c[_qp];
+  Real detFe;
 
   if (_max_substep_iter == 1) //No substepping
   {
@@ -148,15 +144,13 @@ FiniteStrainCrystalPlasticityW0p::update_energies()
   }
 
   // Update elastic and plastic work
+
   detFe = _fe.det();
-  //_fe_old[_qp] = _deformation_gradient_old[_qp] * _fp_old_inv; // works with 1 substep onl
-  //detFe_old = _fe_old[_qp].det();
   invFe = _fe.inverse();
 
   // _pk2[_qp] is the updated piola-kirchoff
   cauchy_stress = _fe * _pk2[_qp] * _fe.transpose()/detFe;
-  //_cauchy_out[_qp] = _deformation_gradient_old[_qp];
-  //WeToTrace = cauchy_stress * ( _fe - _fe_old[_qp] ) * invFe * detFe;
+
   WpToTrace = cauchy_stress * _fe * ( _fp_inv.inverse() - _fp_old_inv.inverse() ) * _fp_inv * invFe * detFe;
 
   iden.zero();
@@ -167,12 +161,9 @@ FiniteStrainCrystalPlasticityW0p::update_energies()
   ee *= 0.5;
 
   _W0e[_qp] = 0.5 * _pk2[_qp].doubleContraction(ee);
-  //_W0e_tmp += WeToTrace.trace();
   _W0p_tmp += WpToTrace.trace();
   _dW0e_dstrain[_qp] = cauchy_stress;
   _dW0p_dstrain[_qp] = cauchy_stress;
-  _dstress_dc[_qp] = -cauchy_stress * (2.0 * (1.0 - c));
-
 }
 
 void
@@ -180,8 +171,6 @@ FiniteStrainCrystalPlasticityW0p::calcResidual( RankTwoTensor &resid )
 {
   RankTwoTensor iden, ce, ee, ce_pk2, eqv_slip_incr, pk2_new;
   Real trD;
-  Real c = _c[_qp];
-  Real xfac = Utility::pow<2>(1.0-c) + _kdamage;
 
   iden.zero();
   iden.addIa(1.0);
@@ -210,7 +199,22 @@ FiniteStrainCrystalPlasticityW0p::calcResidual( RankTwoTensor &resid )
   _fp_inv = _fp_old_inv * eqv_slip_incr;
   _fe = _dfgrd_tmp * _fp_inv;
 
+  ce = _fe.transpose() * _fe;
+  ee = ce - iden;
+  ee *= 0.5;
+
   pk2_new = _elasticity_tensor[_qp] * ee;
+
+  // Calculate bulk viscosity damping
+  // C0 * dot(J) / J * |dot(J) / J| + C1 * dot(J) / J
+  // C0 should be chosen of the order of rho * Le^2, rho = density, Le = element size
+  // C1 should be chosen of the order of rho * Le * cs, cs = sound speed
+  // Maheo et al. Mechanics Research Communications 38 (2011) 81 88
+  trD = ( _deformation_gradient[_qp].det() - _deformation_gradient_old[_qp].det() ) / _dt_original;
+  trD /= _deformation_gradient_old[_qp].det();
+
+  pk2_new.addIa( _C0 * trD * std::abs(trD) );
+  pk2_new.addIa( _C1 * trD );
 
   resid = _pk2_tmp - pk2_new;
 }
