@@ -14,7 +14,8 @@ InputParameters validParams<FiniteStrainCrystalPlasticityW0p>()
   InputParameters params = validParams<FiniteStrainCrystalPlasticity>();
   params.addClassDescription("Crystal Plasticity base class: FCC system with power law flow rule implemented. Plastic energy "
                              "and bulk viscosity damping");
-
+  params.addRequiredParam<Real>("C0", "Von Neuman coefficient");
+  params.addRequiredParam<Real>("C1", "Landshoff coefficient");
   return params;
 }
 
