@@ -29,7 +29,6 @@ FiniteStrainCrystalPlasticityW0p::FiniteStrainCrystalPlasticityW0p(const InputPa
     _dW0e_dstrain(declareProperty<RankTwoTensor>("dW0e_dstrain")),
     _dW0p_dstrain(declareProperty<RankTwoTensor>("dW0p_dstrain"))
 {
-  _dt_original = _dt;
 }
 
 void
@@ -211,7 +210,7 @@ FiniteStrainCrystalPlasticityW0p::calcResidual( RankTwoTensor &resid )
   // C0 should be chosen of the order of rho * Le^2, rho = density, Le = element size
   // C1 should be chosen of the order of rho * Le * cs, cs = sound speed
   // Maheo et al. Mechanics Research Communications 38 (2011) 81 88
-  trD = ( _deformation_gradient[_qp].det() - _deformation_gradient_old[_qp].det() ) / _dt_original;
+  trD = ( _deformation_gradient[_qp].det() - _deformation_gradient_old[_qp].det() ) / _dt; // no substepping
   trD /= _deformation_gradient_old[_qp].det();
 
   pk2_new.addIa( _C0 * trD * std::abs(trD) );

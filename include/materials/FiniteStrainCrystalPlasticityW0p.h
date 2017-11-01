@@ -68,7 +68,6 @@ protected:
 
   Real _W0p_tmp;
   Real _W0p_tmp_old;
-  Real _dt_original;
 };
 
 #endif //FINITESTRAINCRYSTALPLASTICITYW0P_H
